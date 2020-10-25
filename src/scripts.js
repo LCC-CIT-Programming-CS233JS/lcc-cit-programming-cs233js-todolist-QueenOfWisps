@@ -1,4 +1,95 @@
+class ToDoList
+{
+        constructor()
+        {
+            
+            if(!localStorage["TASKS"])
+            {
+                this.tasks= 
+                [
+                    {task: 'Go to Dentist', isComplete: false},
+                    {task: 'Do Gardening', isComplete: true},
+                    {task: 'Renew Library Account', isComplete: false},
+                ];
+            }
+            else 
+            this.tasks= JSON.parse(localStorage["TASKS"]);
+
+            this.loadTasks();   
+            document.getElementById("addBtn").onclick = this.addTaskClick.bind(this);     
+
+        }
+       
+        generateTaskHtml(task, index) {
+            return `
+              <li class="list-group-item checkbox">
+                <div class="row">
+                  <div class="col-md-1 col-xs-1 col-lg-1 col-sm-1 checkbox">
+                    <label>
+                    <input id="toggleTaskStatus" type="checkbox" 
+                    value="" class="" ${(task.isComplete)?"checked":""}
+                    onchange ="toDo.toggleTaskStatus(${index})"
+                    ></label>
+                  </div>
+                  <div class="col-md-10 col-xs-10 col-lg-10 col-sm-10 task-text ${(task.isComplete)?"complete":""}">
+                    ${task.task}
+                  </div>
+                  <div class="col-md-1 col-xs-1 col-lg-1 col-sm-1 delete-icon-area">
+                    <a class="" href="/" onclick="toDo.deleteTask(event,${index})">
+                    <i id="deleteTask" class="delete-icon glyphicon glyphicon-trash"></i></a>
+                  </div>
+                </div>
+              </li>
+            `;
+        }
+
+        loadTasks(){
+            localStorage["TASKS"]= JSON.stringify(this.tasks);
+            let tasksHtml = this.tasks.reduce(
+                (html, task, index) => html += this.generateTaskHtml(task, index), 
+                '');
+            document.getElementById("taskList").innerHTML = tasksHtml;
+
+        }
+
+        toggleTaskStatus(index){
+            this.tasks[index].isComplete = !this.tasks[index].isComplete;
+            this.loadTasks();
+
+        }
+        deleteTask(event,index){
+            event.preventDefault();
+            this.tasks.splice(index,1)
+            this.loadTasks();
+        }
+        addTaskClick(){
+            let task= document.getElementById("addTask").value;
+            if(task== '')
+                document.getElementById("addTask").parentElement.classList.add("has-error");
+            else{ 
+                document.getElementById("addTask").parentElement.classList.remove("has-error");}
+            let newTask = {
+                task: task,
+                isCompete: false
+
+            };
+            this.tasks.push(newTask);
+            this.loadTasks();
+            document.getElementById("addTask").value='';
+
+
+
+        }
+
+
+}
+
+
+
+
+
 /*  Create a class called ToDoList
+
     PART 1 - Show the tasks
     -   Add a constructor
         -   Create an instance variable called tasks.
@@ -85,7 +176,8 @@
     Add a window on load event handler that instantiates a ToDo object.  
     Use and arrow or anonymous function
 */
-
+let toDo; 
+window.onload = ()=>{toDo=new ToDoList();}
 function generateTaskHtml(task, index) {
     return `
       <li class="list-group-item checkbox">

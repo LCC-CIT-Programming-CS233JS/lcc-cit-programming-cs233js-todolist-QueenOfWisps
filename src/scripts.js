@@ -178,6 +178,7 @@ class ToDoList
 */
 let toDo; 
 window.onload = ()=>{toDo=new ToDoList();}
+
 function generateTaskHtml(task, index) {
     return `
       <li class="list-group-item checkbox">
@@ -194,5 +195,6 @@ function generateTaskHtml(task, index) {
         </div>
       </li>
     `;
+    
 }
 
